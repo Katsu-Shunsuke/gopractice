@@ -9,7 +9,8 @@ var count int
 
 // go run main.go を実行してmain()から処理が始まる
 func main() {
-	http.HandleFunc("/countup", handler)
+	fmt.Println("start")
+	http.HandleFunc("/", handler)
 	http.HandleFunc("/get", countHandler)
 	http.ListenAndServe(":8080", nil)
 }
