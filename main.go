@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -18,6 +20,7 @@ func main() {
 	http.HandleFunc("/", showHTML)
 	http.HandleFunc("/add_memo", addMemo)
 	http.HandleFunc("/list_memos", listMemos)
+	http.HandleFunc("/delete_memos", deleteMemos)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -70,4 +73,23 @@ func listMemos(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, string(b))
+}
+
+// curl -X DELETE localhost:8080/delete_memos?id=xxxx,yyyy,zzzz
+func deleteMemos(w http.ResponseWriter, r *http.Request) {
+	if len(memos) == 0 {
+		fmt.Fprintln(w, "There is not a memo")
+		return
+	}
+	id := r.URL.Query().Get("id")
+	ids := strings.Split(id, ",")
+	for _, id := range ids {
+		fmt.Fprintln(w, id)
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			fmt.Fprintln(w, err.Error())
+			return
+		}
+		delete(memos, idInt)
+	}
 }

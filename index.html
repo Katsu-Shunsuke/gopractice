@@ -148,9 +148,10 @@
         return "class-checkbox"
     }
 
-    //メモ一覧を表示する
+// --------   メモ一覧を表示する -------------------------
     const req = new XMLHttpRequest()
     req.addEventListener("load", () => {
+
         //取得したメモ一覧をHTMLにしていく。
         console.log(req.responseText)
         const memos = JSON.parse(req.responseText)
@@ -197,11 +198,15 @@
 
                 editModal.show()
             })
-        })
+        }) 
     })
     req.open("GET", "http://localhost:8080/list_memos")
     req.setRequestHeader("Content-Type", "application/json")
     req.send()
+
+//-------------------------------------------------------------
+
+//------------------ メモの制限 ---------------------------------
 
     function validateMemo(title, body, errorHTMLElement, memoId) {
         errorHTMLElement.innerHTML = ""
@@ -234,10 +239,18 @@
         return true
     }
 
+//--------------------------------------------------
+
+//---------------時間 UTC→JTC------------------------
+
     function now() {
         const now = dayjs()
         return now.format("YYYY-MM-DD") + "T" + now.format("HH:mm:ss") + "+09:00"
     }
+
+//--------------------------------------------------
+
+//----------------メモ追加ボタン----------------------
 
     const addButtonInModal = document.getElementById("id-add-modal-button")
     addButtonInModal.addEventListener("click", (event) => {
@@ -269,6 +282,8 @@
         inputForBody.value = body
         tr.appendChild(inputForBody)
 
+        //--------------編集ボタン------------------------------
+
         const editButton = document.getElementById(editButtonId)
         editButton.addEventListener("click", (event) => {
             validationErrorInEditModal.style.display = "none"
@@ -285,6 +300,8 @@
 
             editModal.show()
         })
+
+        //-----------------------------------------------
 
         //メモをバックエンドサーバに送信する
         const req = new XMLHttpRequest()
@@ -305,6 +322,10 @@
         addModal.hide()
     })
 
+//-----------------------------------------------------------
+
+//----------------メモを登録するボタン--------------------------
+
     const addButton = document.getElementById("id-add-button")
     addButton.addEventListener("click", (event) => {
         titleInAddModal.value = ""
@@ -314,6 +335,10 @@
         validationErrorInAddModal.style.display = "none"
         validationErrorInAddModal.innerHTML = ""
     })
+
+//-----------------------------------------------------------
+
+//---------------------削除ボタン------------------------------
 
     const deleteButton = document.getElementById("id-delete-button")
     deleteButton.addEventListener("click", (event) => {
@@ -336,6 +361,10 @@
         })
     })
 
+//-------------------------------------------------------------
+
+//---------------------全削除ボタン-----------------------------------
+
     const deleteAllMemos = document.getElementById("id-delete-all-memos")
     deleteAllMemos.addEventListener("change", (event) => {
         if (checkboxes.length == 0) {
@@ -350,6 +379,10 @@
             }
         })
     })
+//--------------------------------------------------------------
+
+
+//-------------------------更新ボタン-----------------------------
 
     const updateButton = document.getElementById("id-update-button")
     updateButton.addEventListener("click", (event) => {
@@ -386,6 +419,8 @@
             CreatedAt: createdAt,
             UpdatedAt: updatedAt
         }
+
+        console.log
         req.send(JSON.stringify(httpBody))
 
         editModal.hide()
